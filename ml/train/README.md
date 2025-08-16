@@ -51,11 +51,11 @@ We have successfully set up a dual-environment workflow for ML training and ONNX
 
 ```mermaid
 flowchart LR
-    A["Python (tf-env)"] -->|Train CNN| B["TensorFlow Model"]
-    B -->|Export| C["SavedModel"]
-    C -->|tf2onnx (convert-env)| D["ONNX Model"]
-    D -->|Load| E["Node.js Express + onnxruntime-node"]
-    E -->|API /predict| F["OpenAI + Clients"]
+    A["Python (tf-env)"] -->|"Train CNN"| B["TensorFlow Model"]
+    B -->|"Export"| C["SavedModel"]
+    C -->|"tf2onnx (convert-env)"| D["ONNX Model"]
+    D -->|"Load"| E["Node.js Express + onnxruntime-node"]
+    E -->|"API /predict"| F["OpenAI + Clients"]
 ```
 
 ## 🏗️ Architecture Details
