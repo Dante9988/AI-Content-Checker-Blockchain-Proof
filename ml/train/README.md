@@ -164,8 +164,8 @@ cd ml/train
 source convert-env/bin/activate
 
 python -m tf2onnx.convert \
-  --saved-model ml/train/models/saved_model \
-  --output ml/train/models/model.onnx \
+  --saved-model models/saved_model \
+  --output models/model.onnx \
   --opset 17 \
   --tag serve \
   --signature_def serving_default
@@ -310,9 +310,9 @@ cd ml/train
 python3.12 -m venv convert-env
 source convert-env/bin/activate
 
-# Install ONNX tooling
+# Install ONNX tooling with specific versions
 pip install --upgrade pip
-pip install tf2onnx onnx onnxruntime
+pip install "tensorflow==2.17.1" "tf2onnx==1.16.1" "onnx==1.17.0" "onnxruntime==1.17.3" "numpy==1.26.4" "protobuf>=3.20.3,<6.0" "flatbuffers>=24.3.25"
 ```
 
 **Dependencies**: tf2onnx, onnx, onnxruntime (isolated from TensorFlow)
