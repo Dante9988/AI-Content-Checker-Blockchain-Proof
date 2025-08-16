@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "inference",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "express": "^4.19.2",
-    "openai": "^4.52.0",
+    "onnxruntime-node": "1.22.0-rev",
+    "sharp": "^0.33.0",
+    "fluent-ffmpeg": "^2.1.2",
     "pino": "^8.17.2",
     "pino-pretty": "^10.3.1"
   }

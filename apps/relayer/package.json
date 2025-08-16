@@ -1,16 +1,14 @@
 {
-  "name": "web",
+  "name": "relayer",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js",
+    "dev": "node relayer.stub.js",
+    "start": "node relayer.stub.js",
     "test": "echo \"No tests\""
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "openai": "^4.52.0",
     "pino": "^8.17.2",
     "pino-pretty": "^10.3.1"
   }

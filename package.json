@@ -10,7 +10,48 @@
       "apps/*",
       "packages/*"
     ]
+  },
+  "scripts": {
+    "dev": "concurrently \"yarn workspace web dev\" \"yarn workspace inference dev\"",
+    "dev:web": "yarn workspace web dev",
+    "dev:inference": "yarn workspace inference dev",
+    "dev:relayer": "yarn workspace relayer dev",
+    "dev:all": "concurrently \"yarn workspace web dev\" \"yarn workspace inference dev\" \"yarn workspace relayer dev\"",
+    "build": "yarn workspace @verichain/sdk-js build",
+    "build:sdk": "yarn workspace @verichain/sdk-js build",
+    "build:watch": "yarn workspace @verichain/sdk-js dev",
+    "install:all": "yarn install && yarn build",
+    "setup": "./scripts/setup.sh",
+    "test": "node test-verification.js",
+    "test:health": "curl -s http://localhost:3000/healthz && echo && curl -s http://localhost:3001/healthz",
+    "test:chat": "curl -X POST http://localhost:3000/api/chat -H \"Content-Type: application/json\" -d '{\"messages\":[{\"role\":\"user\",\"content\":\"Hello\"}]}'",
+    "test:verify": "curl -X POST http://localhost:3000/api/verify -H \"Content-Type: application/json\" -d '{\"imageUrl\":\"https://via.placeholder.com/224x224/0000FF/FFFFFF?text=Test\"}'",
+    "test:inference": "curl -X POST http://localhost:3001/infer -H \"Content-Type: application/json\" -d '{\"imageUrl\":\"https://via.placeholder.com/224x224/0000FF/FFFFFF?text=Test\"}'",
+    "start": "yarn dev",
+    "start:prod": "concurrently \"yarn workspace web start\" \"yarn workspace inference start\"",
+    "stop": "pkill -f \"node server.js\"",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules",
+    "clean:dist": "rm -rf packages/sdk-js/dist",
+    "reset": "yarn clean && yarn install:all",
+    "logs": "concurrently \"yarn workspace web logs\" \"yarn workspace inference logs\"",
+    "logs:web": "yarn workspace web logs",
+    "logs:inference": "yarn workspace inference logs",
+    "logs:relayer": "yarn workspace relayer logs",
+    "status": "echo \"Checking service status...\" && yarn test:health",
+    "ml:train": "cd ml/train && source tf-env/bin/activate && python train_model.py",
+    "ml:train:quick": "cd ml/train && source tf-env/bin/activate && python train_model.py --epochs 5 --samples 500",
+    "ml:train:full": "cd ml/train && source tf-env/bin/activate && python train_model.py --epochs 10 --samples 1000",
+    "ml:convert": "cd ml/train && source convert-env/bin/activate && python -m tf2onnx.convert --saved-model models/saved_model --output models/model.onnx --opset 17 --tag serve --signature_def serving_default",
+    "ml:validate": "cd ml/train && ls -lh models/model.onnx",
+    "ml:notebook": "cd ml/train && source tf-env/bin/activate && jupyter notebook",
+    "ml:env:tf": "cd ml/train && python3.12 -m venv tf-env && source tf-env/bin/activate && pip install --upgrade pip && pip install tensorflow scikit-learn opencv-python pillow matplotlib jupyter",
+    "ml:env:convert": "cd ml/train && python3.12 -m venv convert-env && source convert-env/bin/activate && pip install --upgrade pip && pip install tf2onnx onnx onnxruntime",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "help": "echo \"VeriChain Scripts:\" && echo \"  dev          - Start web + inference services\" && echo \"  dev:all      - Start all services (web + inference + relayer)\" && echo \"  build        - Build SDK package\" && echo \"  test         - Run end-to-end tests\" && echo \"  setup        - Run setup script\" && echo \"  status       - Check service health\" && echo \"\" && echo \"ML Pipeline:\" && echo \"  ml:env:tf     - Setup training environment (tf-env)\" && echo \"  ml:env:convert - Setup conversion environment (convert-env)\" && echo \"  ml:train      - Train ML model (default settings)\" && echo \"  ml:train:quick - Quick training (5 epochs, 500 samples)\" && echo \"  ml:train:full  - Full training (10 epochs, 1000 samples)\" && echo \"  ml:convert    - Convert SavedModel to ONNX\" && echo \"  ml:validate   - Validate ONNX export\" && echo \"  ml:notebook   - Start Jupyter notebook\" && echo \"  help          - Show this help\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
-
-
 }
