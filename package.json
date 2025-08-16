@@ -1,0 +1,16 @@
+{
+  "name": "verichain",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Dante9988 <xadja35@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ]
+  }
+
+
+}
