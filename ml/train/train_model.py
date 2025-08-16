@@ -106,7 +106,7 @@ def create_synthetic_dataset(num_samples=1000, img_size=224, seed: int = 42) -> 
     y = np.concatenate([np.zeros(half, dtype=np.int32), np.ones(num_samples - half, dtype=np.int32)])
     return X, y
 
-def create_model(img_size=224) -> keras.Model:
+def create_model(img_size=224, include_augmentation=True) -> keras.Model:
     """Create a simple CNN model for binary classification."""
     print("Creating CNN model...")
 
@@ -117,7 +117,13 @@ def create_model(img_size=224) -> keras.Model:
     ])
 
     inputs = keras.Input(shape=(img_size, img_size, 3), name="input")
-    x = data_augmentation(inputs)
+    
+    # Apply data augmentation only during training, not for inference
+    if include_augmentation:
+        x = data_augmentation(inputs)
+    else:
+        x = inputs
+        
     x = layers.Rescaling(1./255.0)(x)
 
     x = layers.Conv2D(32, 3, strides=2, padding="same")(x)
@@ -147,7 +153,7 @@ def train_model(X_train, y_train, X_test, y_test, epochs=10, batch_size=32, img_
     """Train the model and evaluate on test set."""
     print(f"Training model for {epochs} epochs...")
 
-    model = create_model(img_size=img_size)
+    model = create_model(img_size=img_size, include_augmentation=True)
     model.compile(
         optimizer=keras.optimizers.Adam(learning_rate=0.001),
         loss="binary_crossentropy",
@@ -365,9 +371,16 @@ def main():
         img_size=args.img_size
     )
 
+    # Create inference model without data augmentation
+    print("\nCreating inference model (without data augmentation)...")
+    inference_model = create_model(img_size=args.img_size, include_augmentation=False)
+    
+    # Copy weights from trained model to inference model
+    inference_model.set_weights(model.get_weights())
+    
     # Export artifacts (Keras + SavedModel always; ONNX only if --export-onnx)
     onnx_size_mb, onnx_path, primary_path = export_models(
-        model, args.output_dir, args.img_size, export_onnx=args.export_onnx
+        inference_model, args.output_dir, args.img_size, export_onnx=args.export_onnx
     )
 
     # Metadata (expects: path_to_primary_artifact, accuracy, size_mb, out_dir, img_size)

@@ -227,6 +227,23 @@ ls -lh models/model.onnx
 - ONNX conversion: 90%+
 - Inference API: 85%+
 
+### Running Tests
+
+```bash
+# Run Python unit tests
+cd ml/train
+source tf-env/bin/activate
+python -m unittest tests/test_model.py
+python -m unittest tests/test_data.py
+
+# Run Node.js tests
+cd apps/inference
+yarn test:inference
+yarn test:api
+```
+
+For detailed testing documentation, see [TESTING.md](./TESTING.md).
+
 ## 🔜 Next Steps
 
 ### Immediate (Next 1-2 days)

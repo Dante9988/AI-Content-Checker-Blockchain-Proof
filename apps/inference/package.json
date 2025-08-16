@@ -6,14 +6,21 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "test": "echo \"No tests\""
+    "test": "mocha tests/**/*.js",
+    "test:inference": "mocha tests/test_inference.js",
+    "test:api": "mocha tests/test_api.js"
   },
   "dependencies": {
     "express": "^4.19.2",
-    "onnxruntime-node": "1.22.0-rev",
-    "sharp": "^0.33.0",
     "fluent-ffmpeg": "^2.1.2",
+    "onnxruntime-node": "1.22.0-rev",
     "pino": "^8.17.2",
-    "pino-pretty": "^10.3.1"
+    "pino-pretty": "^10.3.1",
+    "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "assert": "^2.1.0",
+    "mocha": "^11.7.1",
+    "supertest": "^7.1.4"
   }
 }

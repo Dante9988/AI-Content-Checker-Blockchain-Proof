@@ -37,9 +37,8 @@ async function initializeModel() {
     
     // Get model metadata
     const inputMeta = session.inputNames[0];
-    const inputShape = session.inputNames.map(name => session.getInputMetaData(name).dims);
     
-    logger.info(`Model loaded successfully. Input: ${inputMeta}, Shape: ${inputShape}`);
+    logger.info(`Model loaded successfully. Input: ${inputMeta}`);
     
     // Calculate model hash for modelId
     const fs = await import("fs");
@@ -203,7 +202,13 @@ async function startServer() {
   });
 }
 
-startServer().catch(error => {
-  logger.error("Failed to start server:", error);
-  process.exit(1);
-});
+// Start server if this file is run directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  startServer().catch(error => {
+    logger.error("Failed to start server:", error);
+    process.exit(1);
+  });
+}
+
+// Export for testing
+export { app, initializeModel };
