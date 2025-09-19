@@ -62,9 +62,9 @@ try {
 }
 
 // Configuration
-const NETWORK_RPC_URL = process.env.NETWORK_RPC_URL || "http://localhost:8545";
-const VERIFICATION_CONTRACT_ADDRESS = process.env.VERIFICATION_CONTRACT_ADDRESS;
-const TOKEN_CONTRACT_ADDRESS = process.env.TOKEN_CONTRACT_ADDRESS;
+const NETWORK_RPC_URL = process.env.BLOCKCHAIN_RPC_URL || "http://localhost:8545";
+const VERIFICATION_CONTRACT_ADDRESS = process.env.IMAGE_VERIFICATION_ADDRESS;
+const TOKEN_CONTRACT_ADDRESS = process.env.TRUCHAIN_ADDRESS;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 // Initialize provider and wallet

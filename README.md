@@ -8,19 +8,29 @@ VeriChain is a decentralized platform for verifying the authenticity of AI-gener
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Web Service  │    │ Inference       │    │ ML Training     │
-│   (Next.js)    │◄──►│ Service         │◄──►│ (Python + TF)   │
-│   - OpenAI     │    │ - ONNX Runtime  │    │ - TensorFlow    │
-│   - Chat API   │    │ - Image Proc    │    │ - Model Export  │
+│   Web Service  │    │ Inference       │    │ Blockchain      │
+│   (Next.js)    │◄──►│ Service         │◄──►│ Integration     │
+│   - OpenAI     │    │ - GPT-5 API     │    │ - Smart         │
+│   - Chat API   │    │ - Image Proc    │    │   Contracts     │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          │                       │                       │
          ▼                       ▼                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    NestJS API (New!)                        │
+│ - Unified API for all services                              │
+│ - Direct GPT-5 integration                                  │
+│ - TruChain token payments                                   │
+│ - Blockchain verification storage                           │
+└─────────────────────────────────────────────────────────────┘
+         │                       │                       │
+         │                       │                       │
+         ▼                       ▼                       ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   SDK Package   │    │ Relayer Stub    │    │ Smart Contracts │
-│   (TypeScript)  │    │ (Future:        │    │ (Future:        │
-│   - Shared      │    │   Blockchain    │    │   Solidity)     │
-│   - Types      │    │   Integration)   │    │   - FuelToken   │
+│   SDK Package   │    │ Smart Contracts │    │   TruChain      │
+│   (TypeScript)  │    │ (Solidity)      │    │   ERC20 Token   │
+│   - Shared      │    │ - Verification  │    │   - Payment     │
+│   - Types       │    │   Storage       │    │   - Staking     │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
@@ -46,22 +56,24 @@ yarn workspace @verichain/sdk-js build
 ### 2. Set Up Environment Variables
 
 ```bash
-# Create .env files for each service
-echo "OPENAI_API_KEY=your_openai_key_here" > apps/web/.env
+# Create root .env file
+yarn setup:env
 echo "MODEL_PATH=./models/model.onnx" > apps/inference/.env
 ```
 
 ### 3. Start Services
 
 ```bash
-# Terminal 1: Web service (OpenAI + verification)
-yarn workspace web dev
+# Option 1: Start the legacy services (web, inference, relayer)
+yarn dev:all
 
-# Terminal 2: Inference service (ONNX model serving)
-yarn workspace inference dev
+# Option 2: Start the new NestJS unified API (recommended)
+yarn dev:nest
 
-# Terminal 3: Relayer stub (future blockchain integration)
-yarn workspace relayer dev
+# Or start individual legacy services
+yarn dev:web
+yarn dev:inference
+yarn dev:relayer
 ```
 
 ### 4. Train ML Model
