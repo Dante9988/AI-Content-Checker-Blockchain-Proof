@@ -2,8 +2,8 @@ const { ethers } = require('ethers');
 require('dotenv').config();
 
 // Contract ABIs - load from contract artifacts
-const verificationABI = require('./packages/contracts/artifacts/contracts/ImageVerification.sol/ImageVerification.json').abi;
-const tokenABI = require('./packages/contracts/artifacts/contracts/TruChain.sol/TruChain.json').abi;
+const verificationABI = require('./blockchain/artifacts/contracts/ImageVerification.sol/ImageVerification.json').abi;
+const tokenABI = require('./blockchain/artifacts/contracts/TruChain.sol/TruChain.json').abi;
 
 async function main() {
   try {

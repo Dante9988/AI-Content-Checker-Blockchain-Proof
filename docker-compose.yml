@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: truchain-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: truchain
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - truchain-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: truchain-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@truchain.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - truchain-network
+
+  truchain-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: truchain-api
+    environment:
+      NODE_ENV: development
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: truchain
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - truchain-network
+    volumes:
+      - ./truchain-nest:/app/truchain-nest
+      - /app/truchain-nest/node_modules
+
+networks:
+  truchain-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

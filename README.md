@@ -2,24 +2,15 @@
 
 **AI Content Authenticity Verification System**
 
-VeriChain is a decentralized platform for verifying the authenticity of AI-generated content using machine learning models and blockchain technology. This project is currently in the pre-contract phase, focusing on the core ML infrastructure and services.
+VeriChain is a decentralized platform for verifying the authenticity of AI-generated content using GPT-powered analysis and blockchain technology. This project leverages OpenAI's GPT models for content verification and stores results on-chain with smart contracts.
 
 ## 🏗️ Architecture Overview
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Web Service  │    │ Inference       │    │ Blockchain      │
-│   (Next.js)    │◄──►│ Service         │◄──►│ Integration     │
-│   - OpenAI     │    │ - GPT-5 API     │    │ - Smart         │
-│   - Chat API   │    │ - Image Proc    │    │   Contracts     │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         │                       │                       │
-         ▼                       ▼                       ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    NestJS API (New!)                        │
+│                    NestJS API                               │
 │ - Unified API for all services                              │
-│ - Direct GPT-5 integration                                  │
+│ - Direct GPT-4o integration                                 │
 │ - TruChain token payments                                   │
 │ - Blockchain verification storage                           │
 └─────────────────────────────────────────────────────────────┘
@@ -27,10 +18,19 @@ VeriChain is a decentralized platform for verifying the authenticity of AI-gener
          │                       │                       │
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   SDK Package   │    │ Smart Contracts │    │   TruChain      │
-│   (TypeScript)  │    │ (Solidity)      │    │   ERC20 Token   │
-│   - Shared      │    │ - Verification  │    │   - Payment     │
-│   - Types       │    │   Storage       │    │   - Staking     │
+│   Inference     │    │ Smart Contracts │    │   Blockchain    │
+│   Module        │    │ (Solidity)      │    │   Module        │
+│   - GPT-4o API  │    │ - Verification  │    │   - Ethers.js   │
+│   - Image Proc  │    │   Storage       │    │   - Contracts   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Verification  │    │   TruChain      │    │   Testing       │
+│   Module        │    │   ERC20 Token   │    │   Framework     │
+│   - Orchestrator│    │   - Payment     │    │   - Jest        │
+│   - API         │    │   - Staking     │    │   - Supertest   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
@@ -39,9 +39,8 @@ VeriChain is a decentralized platform for verifying the authenticity of AI-gener
 ### Prerequisites
 
 - Node.js 18+ and Yarn
-- Python 3.10+ (for ML training)
-- Conda or virtual environment
-- OpenAI API key (for chat functionality)
+- OpenAI API key (for GPT-4o integration)
+- Ethereum wallet and private key (for blockchain interaction)
 
 ### 1. Install Dependencies
 
@@ -49,205 +48,183 @@ VeriChain is a decentralized platform for verifying the authenticity of AI-gener
 # Install all workspace dependencies
 yarn install
 
-# Build the SDK package
-yarn workspace @verichain/sdk-js build
+# Build the NestJS application
+yarn build:nest
 ```
 
 ### 2. Set Up Environment Variables
 
 ```bash
-# Create root .env file
+# Create root .env file with required configuration
 yarn setup:env
-echo "MODEL_PATH=./models/model.onnx" > apps/inference/.env
+
+# Edit the .env file to include your OpenAI API key and blockchain settings
+# OPENAI_API_KEY=your_key_here
+# BLOCKCHAIN_RPC_URL=your_rpc_url
+# PRIVATE_KEY=your_private_key
+# TRUCHAIN_ADDRESS=your_contract_address
+# IMAGE_VERIFICATION_ADDRESS=your_contract_address
 ```
 
-### 3. Start Services
+### 3. Start the NestJS Service
 
 ```bash
-# Option 1: Start the legacy services (web, inference, relayer)
-yarn dev:all
+# Development mode
+yarn dev
 
-# Option 2: Start the new NestJS unified API (recommended)
-yarn dev:nest
+# Production mode
+yarn start
 
-# Or start individual legacy services
-yarn dev:web
-yarn dev:inference
-yarn dev:relayer
+# Build the NestJS application
+yarn build:nest
 ```
 
-### 4. Train ML Model
-
-```bash
-# Set up Python environment
-cd ml/train
-conda env create -f env.yml
-conda activate verichain-ml
-
-# Or use pip
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-
-# Start Jupyter and run training
-jupyter notebook notebooks/01_train.ipynb
-```
-
-> 📘 **For detailed ML pipeline documentation, see [ml/train/README.md](ml/train/README.md)**
-
-### 5. Test the System
+### 4. Test the System
 
 ```bash
 # Run end-to-end tests
-node test-verification.js
+yarn test:e2e
 
-# Or test individual services
-curl http://localhost:3000/healthz
-curl http://localhost:3001/healthz
+# Test with base64 images
+yarn test:base64
+
+# Fix contract issues (if needed)
+node fix-contract-issues.js
 ```
 
 ## 📁 Project Structure
 
 ```
 verichain/
-├── apps/
-│   ├── web/                 # Next.js web service
-│   │   ├── server.js        # Express server with OpenAI
-│   │   └── package.json
-│   ├── inference/           # ONNX inference service
-│   │   ├── server.js        # Express + ONNX runtime
-│   │   ├── models/          # ONNX model storage
-│   │   └── package.json
-│   └── relayer/             # Future blockchain integration
-│       ├── relayer.stub.js  # Stub implementation
-│       └── package.json
-├── packages/
-│   ├── sdk-js/              # Shared TypeScript SDK
-│   │   ├── src/
-│   │   │   ├── types.ts     # Shared type definitions
-│   │   │   ├── client.ts    # Client SDK
-│   │   │   └── index.ts     # Main exports
-│   │   └── package.json
-│   └── contracts/           # Hardhat workspace (existing)
-├── ml/
-│   └── train/               # ML training pipeline
-│       ├── env.yml          # Conda environment
-│       ├── requirements.txt # Pip dependencies
-│       └── notebooks/       # Jupyter notebooks
-├── test-verification.js     # End-to-end test script
+├── truchain-nest/         # NestJS unified application
+│   ├── src/
+│   │   ├── main.ts        # Application entry point
+│   │   ├── app.module.ts  # Root module
+│   │   ├── inference/     # GPT-4o inference module
+│   │   ├── blockchain/    # Blockchain integration module
+│   │   ├── verification/  # Verification orchestration module
+│   │   └── shared/        # Shared utilities and config
+│   ├── test/              # End-to-end and integration tests
+│   └── package.json
+├── blockchain/            # Hardhat workspace
+│   ├── contracts/         # Solidity smart contracts
+│   │   ├── ImageVerification.sol # Verification storage
+│   │   └── TruChain.sol   # ERC20 token for payments
+│   ├── scripts/           # Deployment scripts
+│   └── test/              # Contract tests
+├── fix-contract-issues.js # Utility for blockchain setup
+├── run-nest-api.js        # Script to run NestJS app
+├── test-base64.js         # Test script for base64 images
 └── README.md
 ```
 
 ## 🔧 Service Details
 
-### Web Service (`apps/web`)
+### NestJS Application (`truchain-nest`)
 
 - **Port**: 3000
-- **Purpose**: OpenAI integration and verification orchestration
-- **Endpoints**:
-  - `POST /api/chat` - OpenAI chat completion (streaming)
-  - `POST /api/verify` - Image verification (forwards to inference)
-  - `GET /healthz` - Health check
-  - `GET /metrics` - Service metrics
+- **Purpose**: Unified API for all services
+- **Modules**:
+  - **Inference**: GPT-4o integration for image analysis
+  - **Blockchain**: Smart contract interaction via ethers.js
+  - **Verification**: Orchestration of verification flow
+  - **Shared**: Configuration and utilities
 
-### Inference Service (`apps/inference`)
+### Smart Contracts (`blockchain`)
 
-- **Port**: 3001
-- **Purpose**: ONNX model serving for image classification
-- **Endpoints**:
-  - `POST /infer` - Image inference endpoint
-  - `GET /healthz` - Health check
-  - `GET /metrics` - Model and service metrics
-
-### ML Training (`ml/train`)
-
-- **Purpose**: Train and export ML models for authenticity detection
-- **Pipeline**:
-  1. Load and preprocess image dataset
-  2. Train CNN classifier (real vs AI-generated)
-  3. Export to ONNX format
-  4. Generate model metadata and hash
-- **Documentation**: 📘 [Detailed ML Pipeline README](ml/train/README.md) - Complete training, conversion, and inference documentation
-
-### SDK Package (`packages/sdk-js`)
-
-- **Purpose**: Shared types and client utilities
+- **Purpose**: On-chain storage of verification results
+- **Contracts**:
+  - **ImageVerification.sol**: Stores verification results on-chain
+  - **TruChain.sol**: ERC20 token for verification payments
 - **Features**:
-  - TypeScript type definitions
-  - Client SDK for service interaction
-  - Content hash calculation utilities
-  - Verification flow orchestration
+  - Content hash verification
+  - Token-based payment system
+  - Burn and staking mechanisms
+  - Verifier authorization
+
+### Future GPT Training Integration
+
+- **Purpose**: In-house fine-tuning of GPT models for improved verification
+- **Features**:
+  - Custom dataset creation
+  - Fine-tuning for specific content types
+  - Model performance evaluation
+  - Continuous improvement pipeline
 
 ## 🧪 Testing
 
 ### Manual Testing
 
 ```bash
-# Test OpenAI chat
-curl -X POST http://localhost:3000/api/chat \
+# Test image verification with base64
+curl -X POST http://localhost:3000/api/verify/blockchain \
   -H "Content-Type: application/json" \
-  -d '{"messages":[{"role":"user","content":"Hello"}]}'
+  -d '{"base64":"base64_encoded_image_data"}'
 
-# Test image verification
-curl -X POST http://localhost:3000/api/verify \
+# Test detailed verification
+curl -X POST http://localhost:3000/api/verify/blockchain/detailed \
   -H "Content-Type: application/json" \
-  -d '{"imageUrl":"https://example.com/image.jpg"}'
+  -d '{"base64":"base64_encoded_image_data"}'
 
-# Test inference directly
-curl -X POST http://localhost:3001/infer \
-  -H "Content-Type: application/json" \
-  -d '{"imageUrl":"https://example.com/image.jpg"}'
+# Test blockchain verification status
+curl http://localhost:3000/api/blockchain/verify/0x1234...
 ```
 
 ### Automated Testing
 
 ```bash
-# Run end-to-end tests
-node test-verification.js
+# Run all end-to-end tests
+yarn test:e2e
 
-# Test with custom URLs
-node test-verification.js --web-url http://localhost:3000 --inference-url http://localhost:3001
+# Run specific test file
+yarn test:e2e real-integration.e2e-spec.ts
+
+# Test base64 image verification
+yarn test:base64
 ```
 
 ## 📊 Monitoring & Observability
 
 ### Logging
 
-All services use structured logging with Pino:
+The NestJS application uses structured logging:
 - **Trace IDs**: Every request gets a unique trace ID
 - **Structured logs**: JSON format with consistent fields
-- **Pretty printing**: Human-readable logs in development
+- **Service-specific logging**: Each module has its own logger
 
 ### Health Checks
 
 ```bash
-# Web service health
-curl http://localhost:3000/healthz
+# NestJS API health
+curl http://localhost:3000/health
 
-# Inference service health
-curl http://localhost:3001/healthz
+# Blockchain connection status
+curl http://localhost:3000/api/blockchain/health
 ```
 
-### Metrics
+### Contract Verification
 
 ```bash
-# Service metrics
-curl http://localhost:3000/metrics
-curl http://localhost:3001/metrics
+# Fix common contract issues (verifier, model approval, tokens)
+node fix-contract-issues.js
+
+# Check if an image is verified on-chain
+curl http://localhost:3000/api/blockchain/isVerified/0x1234...
 ```
 
 ## 🔮 Future Roadmap
 
-### Phase 2: Smart Contracts (Next Sprint)
+### Phase 2: Enhanced GPT Integration
 
-- **FuelToken.sol**: ERC20 token for verification fees
-- **ProofRegistry.sol**: On-chain proof storage
-- **Validator contracts**: Staking and reward mechanisms
+- **GPT Fine-tuning**: Custom model training for specific content types
+- **Multi-modal Analysis**: Combined text and image verification
+- **Confidence Scoring**: Improved accuracy metrics
+- **Explanation Generation**: Detailed reasoning for verification results
 
 ### Phase 3: Advanced Features
 
 - **Video processing**: Support for video authenticity detection
-- **Model marketplace**: Decentralized model distribution
+- **Token Economics**: Enhanced staking and rewards system
 - **Validator network**: Distributed verification consensus
 - **Mobile SDK**: React Native and Flutter support
 
@@ -255,29 +232,29 @@ curl http://localhost:3001/metrics
 
 ### Common Issues
 
-1. **Port conflicts**: Ensure ports 3000 and 3001 are available
-2. **ONNX model missing**: Train and export model first, then copy to `apps/inference/models/`
-3. **OpenAI API errors**: Check API key and billing status
-4. **Python environment**: Ensure correct Python version and dependencies
+1. **Port conflicts**: Ensure port 3000 is available
+2. **OpenAI API errors**: Check API key and billing status
+3. **Blockchain connection**: Verify RPC URL and private key
+4. **Contract errors**: Run fix-contract-issues.js to resolve common problems
 
 ### Debug Mode
 
 ```bash
 # Enable debug logging
-DEBUG=* yarn workspace web dev
-DEBUG=* yarn workspace inference dev
+DEBUG=* yarn dev
+
+# Check environment variables
+cat .env | grep -v PRIVATE_KEY
 ```
 
-### Service Dependencies
+### Blockchain Troubleshooting
 
 ```bash
-# Check service health
-yarn workspace web health
-yarn workspace inference health
+# Check contract addresses
+node -e "require('dotenv').config(); console.log(process.env.TRUCHAIN_ADDRESS, process.env.IMAGE_VERIFICATION_ADDRESS)"
 
-# View logs
-yarn workspace web logs
-yarn workspace inference logs
+# Fix common contract issues
+node fix-contract-issues.js
 ```
 
 ## 🤝 Contributing
@@ -300,5 +277,5 @@ MIT License - see LICENSE file for details
 
 ---
 
-**Status**: Pre-contract phase - Core ML infrastructure complete, smart contracts next sprint.
-**Next Milestone**: Smart contract development and on-chain integration.
+**Status**: NestJS integration complete with GPT-4o and blockchain verification.
+**Next Milestone**: Enhanced GPT integration and token economics.

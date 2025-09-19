@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 // Path to the NestJS application
-const nestAppPath = path.join(__dirname, 'apps/verichain-nest');
+const nestAppPath = path.join(__dirname, 'truchain-nest');
 
 // Check if the NestJS application exists
 if (!fs.existsSync(nestAppPath)) {

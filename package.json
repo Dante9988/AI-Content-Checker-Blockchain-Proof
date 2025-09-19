@@ -7,8 +7,8 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "apps/*",
-      "packages/*"
+      "truchain-nest",
+      "blockchain"
     ]
   },
   "scripts": {
@@ -17,21 +17,23 @@
     "start": "yarn start:nest",
     "dev:nest": "node run-nest-api.js --dev",
     "start:nest": "node run-nest-api.js",
-    "deploy:contracts": "cd packages/contracts && npx hardhat run scripts/deploy-verification.ts --network localhost",
-    "build": "yarn workspace @verichain/sdk-js build",
-    "build:sdk": "yarn workspace @verichain/sdk-js build",
-    "build:watch": "yarn workspace @verichain/sdk-js dev",
-    "build:nest": "cd apps/verichain-nest && yarn build",
+    "start:with-db": "node run-with-db.js",
+    "start:docker-db": "node run-with-docker-db.js",
+    "start:local-db": "node run-with-local-db.js",
+    "deploy:contracts": "cd blockchain && npx hardhat run scripts/deploy-verification.ts --network localhost",
+    "build": "yarn build:nest",
+    "build:nest": "cd truchain-nest && yarn build",
+    
     "install:all": "yarn install && yarn build",
     "test:base64": "node test-base64.js",
-    "test:e2e": "cd apps/verichain-nest && yarn test:e2e",
-    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules",
-    "clean:dist": "rm -rf packages/sdk-js/dist",
+    "test:e2e": "cd truchain-nest && yarn test:e2e",
+    "clean": "rm -rf node_modules truchain-nest/node_modules blockchain/node_modules",
+    
     "reset": "yarn clean && yarn install:all",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up",
     "docker:down": "docker-compose down",
-    "help": "echo \"VeriChain Scripts:\" && echo \"  dev          - Start NestJS development server\" && echo \"  start        - Start NestJS production server\" && echo \"  build:nest   - Build NestJS application\" && echo \"  build:sdk    - Build SDK package\" && echo \"  test:e2e     - Run end-to-end tests\" && echo \"  test:base64  - Test verification with base64 image data\" && echo \"  deploy:contracts - Deploy smart contracts\" && echo \"  setup:env    - Create .env file from example\" && echo \"  help         - Show this help\""
+    "help": "echo \"TruChain Scripts:\" && echo \"  dev          - Start NestJS development server\" && echo \"  start        - Start NestJS production server\" && echo \"  start:with-db - Start NestJS with PostgreSQL database setup\" && echo \"  start:docker-db - Start NestJS with Docker PostgreSQL database\" && echo \"  start:local-db - Start NestJS with local PostgreSQL database (recommended for WSL2)\" && echo \"  build:nest   - Build NestJS application\" && echo \"  test:e2e     - Run end-to-end tests\" && echo \"  test:base64  - Test verification with base64 image data\" && echo \"  deploy:contracts - Deploy smart contracts\" && echo \"  setup:env    - Create .env file from example\" && echo \"  help         - Show this help\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
