@@ -5,8 +5,8 @@ import path from 'path';
 import fetch from 'node-fetch';
 
 // Configuration
-const API_URL = process.env.API_URL || 'http://localhost:3000/api/verify';
-const DETAILED_API_URL = process.env.DETAILED_API_URL || 'http://localhost:3000/api/verify/detailed';
+const API_URL = process.env.API_URL || 'http://localhost:3000/api/verify/blockchain';
+const DETAILED_API_URL = process.env.DETAILED_API_URL || 'http://localhost:3000/api/verify/blockchain/detailed';
 const TEST_IMAGE_PATH = process.env.TEST_IMAGE_PATH || './test-image.jpg';
 const DEFAULT_TEST_IMAGE = 'https://via.placeholder.com/224x224/0000FF/FFFFFF?text=Test';
 
