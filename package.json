@@ -1,0 +1,54 @@
+{
+  "name": "verichain",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Dante9988 <xadja35@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "dev": "concurrently \"yarn workspace web dev\" \"yarn workspace inference dev\"",
+    "setup:env": "echo \"Creating .env file from example...\" && cp -n .env.example .env || true",
+    "dev:web": "yarn workspace web dev",
+    "dev:inference": "yarn workspace inference dev",
+    "dev:relayer": "yarn workspace relayer dev",
+    "dev:all": "concurrently \"yarn workspace web dev\" \"yarn workspace inference dev\" \"yarn workspace relayer dev\"",
+    "deploy:contracts": "cd packages/contracts && npx hardhat run scripts/deploy-verification.ts --network localhost",
+    "build": "yarn workspace @verichain/sdk-js build",
+    "build:sdk": "yarn workspace @verichain/sdk-js build",
+    "build:watch": "yarn workspace @verichain/sdk-js dev",
+    "install:all": "yarn install && yarn build",
+    "setup": "./scripts/setup.sh",
+    "test": "node test-verification.js",
+    "test:health": "curl -s http://localhost:3000/healthz && echo && curl -s http://localhost:3001/healthz",
+    "test:chat": "curl -X POST http://localhost:3000/api/chat -H \"Content-Type: application/json\" -d '{\"messages\":[{\"role\":\"user\",\"content\":\"Hello\"}]}'",
+    "test:verify": "curl -X POST http://localhost:3000/api/verify -H \"Content-Type: application/json\" -d '{\"imageUrl\":\"https://via.placeholder.com/224x224/0000FF/FFFFFF?text=Test\"}'",
+    "test:verify:detailed": "curl -X POST http://localhost:3000/api/verify/detailed -H \"Content-Type: application/json\" -d '{\"imageUrl\":\"https://via.placeholder.com/224x224/0000FF/FFFFFF?text=Test\"}'",
+    "test:base64": "node test-base64.js",
+    "test:inference": "curl -X POST http://localhost:3001/infer -H \"Content-Type: application/json\" -d '{\"imageUrl\":\"https://via.placeholder.com/224x224/0000FF/FFFFFF?text=Test\"}'",
+    "start": "yarn dev",
+    "start:prod": "concurrently \"yarn workspace web start\" \"yarn workspace inference start\"",
+    "stop": "pkill -f \"node server.js\"",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules",
+    "clean:dist": "rm -rf packages/sdk-js/dist",
+    "reset": "yarn clean && yarn install:all",
+    "logs": "concurrently \"yarn workspace web logs\" \"yarn workspace inference logs\"",
+    "logs:web": "yarn workspace web logs",
+    "logs:inference": "yarn workspace inference logs",
+    "logs:relayer": "yarn workspace relayer logs",
+    "status": "echo \"Checking service status...\" && yarn test:health",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "help": "echo \"VeriChain Scripts:\" && echo \"  dev          - Start web + inference services\" && echo \"  dev:all      - Start all services (web + inference + relayer)\" && echo \"  build        - Build SDK package\" && echo \"  test         - Run end-to-end tests\" && echo \"  setup        - Run setup script\" && echo \"  status       - Check service health\" && echo \"\" && echo \"Verification:\" && echo \"  test:verify   - Test basic verification endpoint\" && echo \"  test:verify:detailed - Test detailed verification with explanation\" && echo \"  test:base64   - Test verification with base64 image data\" && echo \"  test:inference - Test direct inference endpoint\" && echo \"  help          - Show this help\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "relayer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "dev:stub": "node relayer.stub.js",
+    "relayer": "node relayer.js",
+    "test": "echo \"No tests\""
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ethers": "^5.7.2",
+    "pino": "^8.17.2",
+    "pino-pretty": "^10.3.1"
+  }
+}
