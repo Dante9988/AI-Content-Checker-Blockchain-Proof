@@ -1,8 +1,8 @@
-# VeriChain 🔗
+# TruChain 🔗
 
 **AI Content Authenticity Verification System**
 
-VeriChain is a decentralized platform for verifying the authenticity of AI-generated content using GPT-powered analysis and blockchain technology. This project leverages OpenAI's GPT models for content verification and stores results on-chain with smart contracts.
+TruChain is a decentralized platform for verifying the authenticity of AI-generated content using GPT-powered analysis and blockchain technology. This project leverages OpenAI's GPT models for content verification and stores results on-chain with smart contracts.
 
 ## 🏗️ Architecture Overview
 
